@@ -39,8 +39,16 @@ module.exports = function(app, passport){
     		res.send(user)
     	})
     });
-    app.get('/api/user', isLoggedIn, function(req, res){
+    app.get('/api/currentuser', isLoggedIn, function(req, res){
     	res.send(req.user);
+    })
+    app.get('/api/user/:id', isLoggedIn, function(req, res){
+    	User.findById(req.params.id, 'firstname lastname bio facebookid', function(err, user){
+    		if(err){
+    			res.send(err)
+    		}
+    		res.send(user)
+    	})
     })
     app.put('/api/user', isLoggedIn, function(req, res){
     	User.findById(req.user._id, function(err, user){

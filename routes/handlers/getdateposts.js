@@ -5,6 +5,6 @@ module.exports = function(req, res){
 		if(err){
 			res.send(err)
 		}
-		res.send(datepost)
+		res.send(datepost);
 	})
 }
