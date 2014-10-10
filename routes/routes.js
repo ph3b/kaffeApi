@@ -26,7 +26,7 @@ module.exports = function(app, passport){
     app.get('/api/dateposts/:postid', function(req, res){
     	
     })
-    app.post('/api/dateposts/', addDatePost);
+    app.post('/api/dateposts/', isLoggedIn, addDatePost);
 
     app.get('/api/isloggedin', function(req, res){
     	res.send(req.isAuthenticated() ? req.user : '0')
@@ -54,6 +54,14 @@ module.exports = function(app, passport){
     			}
     			res.send('Bio har blitt oppdatert');
     		})
+    	})
+    }),
+    app.get('/api/user/:id', isLoggedIn, function(req, res){
+    	User.findById(req.params.id, 'facebookid', function(err, user){
+    		if(err){
+    			res.send(err)
+    		}
+    		res.send(user)
     	})
     })
 
