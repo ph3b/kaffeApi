@@ -43,7 +43,6 @@ module.exports = function(app, passport){
     	res.send(req.user);
     })
     app.put('/api/user', isLoggedIn, function(req, res){
-    	console.log(req.body)
     	User.findById(req.user._id, function(err, user){
     		if(err){
     			res.send(err)
