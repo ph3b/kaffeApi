@@ -4,7 +4,7 @@ var User = require('./user');
 
 var datepostSchema = mongoose.Schema({
 	poster : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-	dateTime : Date,
+	datetime : Date,
 	location : String,
 	message : String,
 	requests : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
