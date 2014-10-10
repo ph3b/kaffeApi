@@ -6,6 +6,7 @@ var userSchema = mongoose.Schema({
 	email: String,
 	facebookid : String,
 	facebooktoken : String,
+	bio: { type: String, default: null}
 
 	//TODO
 	// activedatepost : object.id, ref dateposts

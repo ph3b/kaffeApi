@@ -17,6 +17,14 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.all('*', function(req, res, next) {	
+  res.header("Access-Control-Allow-Origin", req.headers.origin); //NB: Remove before production
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+ });
+
 app.use(session({
 	secret: 'mathiasersuperkulogbest',
 	resave: true,

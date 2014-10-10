@@ -1,6 +1,9 @@
 var getDatePosts = require('./handlers/getdateposts');
 var addDatePost = require('./handlers/adddatepost');
+var frontend = require('../config/frontend');
+var User = require('../models/user');
 
+var baseFront = frontend.appBase;
 module.exports = function(app, passport){
     
     app.get('/login', function(req,res){
@@ -15,7 +18,7 @@ module.exports = function(app, passport){
 
     app.get('/auth/facebook/callback',
     	passport.authenticate('facebook', {
-    		successRedirect : '/success',
+    		successRedirect : baseFront + 'feed',
     		failureRedirect : '/failure'
     	}));
 
@@ -26,13 +29,40 @@ module.exports = function(app, passport){
     app.post('/api/dateposts/', addDatePost);
 
     app.get('/api/isloggedin', function(req, res){
-    	res.send(req.isAutenticated ? req.user : '0');
+    	res.send(req.isAuthenticated() ? req.user : '0')
+    })
+    app.get('/api/users', isLoggedIn, function(req, res){
+    	User.find(function(err, user){
+    		if(err){
+    			res.send(err)
+    		}
+    		res.send(user)
+    	})
+    });
+    app.get('/api/user', isLoggedIn, function(req, res){
+    	res.send(req.user);
+    })
+    app.put('/api/user', isLoggedIn, function(req, res){
+    	console.log(req.body)
+    	User.findById(req.user._id, function(err, user){
+    		if(err){
+    			res.send(err)
+    		}
+    		user.bio = req.body.bio;
+    		user.save(function(err){
+    			if(err){
+    				res.send(err)
+    			}
+    			res.send('Bio har blitt oppdatert');
+    		})
+    	})
     })
 
 }
 function isLoggedIn(req, res, next){
-	if(req.isAthenticated()){
+	if(req.isAuthenticated()){
 		return next();
+	} else{
+		res.send('User is not logged in.')
 	}
-	res.send('User is not logged in.')
 }
