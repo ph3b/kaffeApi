@@ -11,10 +11,10 @@ module.exports = function(req, res){
 		var midnight = moment();
 		midnight.hours(23);
 		midnight.minutes(59);
-		if(datepostTime.isAfter(now) && datepostTime.isBefore(midnight)){
+		if(datepostTime.isAfter(now) && datepostTime.isBefore(midnight) && user.activedatepost.active){
 			res.send(user.activedatepost);
 		} else {
 			res.send('0');
 		}
-	})
+	});
 }

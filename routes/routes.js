@@ -5,6 +5,7 @@ var getUsers = require('./handlers/getusers');
 var getUserById = require('./handlers/getuserbyid');
 var updateBio = require('./handlers/updatebio');
 var getMyActivePost = require('./handlers/getmyactivepost');
+var deleteDatePost = require('./handlers/deletedatepost');
 
 // Required validation handlers
 var datePostValidation = require('./handlers/validation/datepostvalidation');
@@ -47,6 +48,7 @@ module.exports = function(app, passport){
 
     app.put('/api/user', isLoggedIn, updateBio); 									// Update bio.
 
+    app.delete('/api/datepost/:id', isLoggedIn, deleteDatePost);
 };
 	// Server side authentication check for route restriction.
 function isLoggedIn(req, res, next){
