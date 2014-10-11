@@ -1,4 +1,5 @@
 var datePost = require('../../models/datepost');
+var User = require('../../models/user');
 
 module.exports = function(req, res){
 	
@@ -14,6 +15,17 @@ module.exports = function(req, res){
 		if(err){
 			res.send(err);
 		} else {
+			User.findById(req.user._id, function(err, user){
+				if(err){
+					res.send(err)
+				}
+				user.activedatepost = newDatePost._id;
+				user.save(function(err){
+					if(err){
+						res.send(err)
+					}
+				})
+			})
 			res.send('Saved');
 		}
 	})

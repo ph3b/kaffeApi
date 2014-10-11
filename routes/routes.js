@@ -4,6 +4,7 @@ var addDatePost = require('./handlers/adddatepost');
 var getUsers = require('./handlers/getusers');
 var getUserById = require('./handlers/getuserbyid');
 var updateBio = require('./handlers/updatebio');
+var getMyActivePost = require('./handlers/getmyactivepost');
 
 // Required validation handlers
 var datePostValidation = require('./handlers/validation/datepostvalidation');
@@ -24,21 +25,27 @@ module.exports = function(app, passport){
     );
 
     // Api routes
-    app.get('/api/dateposts', isLoggedIn, getDatePosts); 		// Returns all dateposts.
+
+    // Dateposts
+    app.get('/api/dateposts', isLoggedIn, getDatePosts); 							// Returns all dateposts.
     
     app.post('/api/dateposts/', isLoggedIn, datePostValidation, addDatePost); 		// Adds datepost.
 
-    app.get('/api/isloggedin', function(req, res){				// Returns if user is logged in. Used by route restriction in angular.
+    app.get('/api/activepost', isLoggedIn, getMyActivePost);
+
+    // User related
+
+    app.get('/api/isloggedin', function(req, res){									// Returns if user is logged in. Used by route restriction in angular.
     	res.send(req.isAuthenticated() ? req.user : '0')
     })
-    app.get('/api/users', isLoggedIn, getUsers); 				// Returns all user. Need to restrict.
+    app.get('/api/users', isLoggedIn, getUsers); 									// Returns all user. Need to restrict.
     
-    app.get('/api/currentuser', isLoggedIn, function(req, res){ // Get current user NB: This returns fb-token, should strip this field.
+    app.get('/api/currentuser', isLoggedIn, function(req, res){ 					// Get current user NB: This returns fb-token, should strip this field.
     	res.send(req.user);
     })
-    app.get('/api/user/:id', isLoggedIn, getUserById); 			// Get user by their ID. Strips private fields.
+    app.get('/api/user/:id', isLoggedIn, getUserById); 								// Get user by their ID. Strips private fields.
 
-    app.put('/api/user', isLoggedIn, updateBio); 				// Update bio.
+    app.put('/api/user', isLoggedIn, updateBio); 									// Update bio.
 
 };
 	// Server side authentication check for route restriction.
