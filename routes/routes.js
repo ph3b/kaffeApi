@@ -1,18 +1,18 @@
+// Required route handlers.
 var getDatePosts = require('./handlers/getdateposts');
 var addDatePost = require('./handlers/adddatepost');
+var getUsers = require('./handlers/getusers');
+var getUserById = require('./handlers/getuserbyid');
+var updateBio = require('./handlers/updatebio');
+
+// Required validation handlers
+var datePostValidation = require('./handlers/validation/datepostvalidation');
+
+// Config for our front-end app.
 var frontend = require('../config/frontend');
-var User = require('../models/user');
-
 var baseFront = frontend.appBase;
-module.exports = function(app, passport){
-    
-    app.get('/login', function(req,res){
-        console.log('Logg inn route');
-    });
 
-    app.get('/user', function(req, res){
-    	res.send(req.user);
-    })
+module.exports = function(app, passport){
     // Facebook authentication
     app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email'}));
 
@@ -20,64 +20,32 @@ module.exports = function(app, passport){
     	passport.authenticate('facebook', {
     		successRedirect : baseFront + 'feed',
     		failureRedirect : '/failure'
-    	}));
+    	})
+    );
 
-    app.get('/api/dateposts', getDatePosts);
-    app.get('/api/dateposts/:postid', function(req, res){
-    	
-    })
-    app.post('/api/dateposts/', isLoggedIn, addDatePost);
+    // Api routes
+    app.get('/api/dateposts', isLoggedIn, getDatePosts); 		// Returns all dateposts.
+    
+    app.post('/api/dateposts/', isLoggedIn, datePostValidation, addDatePost); 		// Adds datepost.
 
-    app.get('/api/isloggedin', function(req, res){
+    app.get('/api/isloggedin', function(req, res){				// Returns if user is logged in. Used by route restriction in angular.
     	res.send(req.isAuthenticated() ? req.user : '0')
     })
-    app.get('/api/users', isLoggedIn, function(req, res){
-    	User.find(function(err, user){
-    		if(err){
-    			res.send(err)
-    		}
-    		res.send(user)
-    	})
-    });
-    app.get('/api/currentuser', isLoggedIn, function(req, res){
+    app.get('/api/users', isLoggedIn, getUsers); 				// Returns all user. Need to restrict.
+    
+    app.get('/api/currentuser', isLoggedIn, function(req, res){ // Get current user NB: This returns fb-token, should strip this field.
     	res.send(req.user);
     })
-    app.get('/api/user/:id', isLoggedIn, function(req, res){
-    	User.findById(req.params.id, 'firstname lastname bio facebookid', function(err, user){
-    		if(err){
-    			res.send(err)
-    		}
-    		res.send(user)
-    	})
-    })
-    app.put('/api/user', isLoggedIn, function(req, res){
-    	User.findById(req.user._id, function(err, user){
-    		if(err){
-    			res.send(err)
-    		}
-    		user.bio = req.body.bio;
-    		user.save(function(err){
-    			if(err){
-    				res.send(err)
-    			}
-    			res.send('Bio har blitt oppdatert');
-    		})
-    	})
-    }),
-    app.get('/api/user/:id', isLoggedIn, function(req, res){
-    	User.findById(req.params.id, 'facebookid', function(err, user){
-    		if(err){
-    			res.send(err)
-    		}
-    		res.send(user)
-    	})
-    })
+    app.get('/api/user/:id', isLoggedIn, getUserById); 			// Get user by their ID. Strips private fields.
 
-}
+    app.put('/api/user', isLoggedIn, updateBio); 				// Update bio.
+
+};
+	// Server side authentication check for route restriction.
 function isLoggedIn(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	} else{
 		res.send('User is not logged in.')
 	}
-}
+};
