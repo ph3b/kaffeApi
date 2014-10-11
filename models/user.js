@@ -10,7 +10,6 @@ var userSchema = mongoose.Schema({
 	activedatepost : { type: mongoose.Schema.Types.ObjectId, ref: 'Datepost' , default: null}
 
 	//TODO
-	// activedatepost : object.id, ref dateposts
 	// activedate : true ? object.id ref dates
 	// previousdates : object.id ref dates
 });

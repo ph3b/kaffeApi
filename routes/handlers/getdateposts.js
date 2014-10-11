@@ -8,11 +8,11 @@ module.exports = function(req, res){
 	midnight.setMinutes(59);
 	midnight.setSeconds(0);
 
-	// Get posts where datetime field is a date between now and midnight
+	// Return all dateposts where the time is between now and midnight today
 	datePost.find({'datetime': {'$gte': now, '$lte' : midnight}}).populate('poster', 'firstname lastname facebookid').exec(function(err, datepost){
 		if(err){
 			res.send(err)
 		}
 		res.send(datepost);
-	})
+	});
 }

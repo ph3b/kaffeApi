@@ -1,4 +1,4 @@
-// Required route handlers.
+// Required route handlers
 var getDatePosts = require('./handlers/getdateposts');
 var addDatePost = require('./handlers/adddatepost');
 var getUsers = require('./handlers/getusers');
@@ -10,7 +10,7 @@ var deleteDatePost = require('./handlers/deletedatepost');
 // Required validation handlers
 var datePostValidation = require('./handlers/validation/datepostvalidation');
 
-// Config for our front-end app.
+// Config for our front-end app
 var frontend = require('../config/frontend');
 var baseFront = frontend.appBase;
 
@@ -34,8 +34,9 @@ module.exports = function(app, passport){
 
     app.get('/api/activepost', isLoggedIn, getMyActivePost);
 
-    // User related
+    app.delete('/api/datepost/:id', isLoggedIn, deleteDatePost);
 
+    // User related
     app.get('/api/isloggedin', function(req, res){									// Returns if user is logged in. Used by route restriction in angular.
     	res.send(req.isAuthenticated() ? req.user : '0')
     })
@@ -48,7 +49,7 @@ module.exports = function(app, passport){
 
     app.put('/api/user', isLoggedIn, updateBio); 									// Update bio.
 
-    app.delete('/api/datepost/:id', isLoggedIn, deleteDatePost);
+
 };
 	// Server side authentication check for route restriction.
 function isLoggedIn(req, res, next){

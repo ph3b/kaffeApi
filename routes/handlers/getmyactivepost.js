@@ -1,3 +1,6 @@
+// Checks the user for an active datepost, date time assigned on the post has to be within
+// now and midnight the same day. Return '0' if no such date is present.
+
 var User = require('../../models/user');
 var moment = require('moment');
 

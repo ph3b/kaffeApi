@@ -1,6 +1,7 @@
 // Validation modules
 var moment = require('moment');
 var validator = require('validator');
+
 var User = require('../../../models/user');
 moment().format();
 
@@ -24,11 +25,11 @@ module.exports = function(req, res, next){
 	} else {
 		return res.send('The date specified is outside of valid range. Please specify a date between now and midnight today.')
 	}
-	// Form field validation
+	// Form fields validation
 	// ==============================
 	// Message-field
 	var message = req.body.message;
-	if(validator.isLength(message, 3, 16) && !validator.isURL(message)){
+	if(validator.isLength(message, 3, 25) && !validator.isURL(message)){
 		locationDidPass = true;
 	} else {
 		return res.send('Message field must contain between 3 to 16 characters and no urls.')
@@ -36,7 +37,7 @@ module.exports = function(req, res, next){
 
 	// Location-field
 	var location = req.body.location;
-	if(validator.isLength(location, 3, 16) && !validator.isURL(location)){
+	if(validator.isLength(location, 3, 25) && !validator.isURL(location)){
 		messageDidPass = true;
 	} else {
 		return res.send('Location field must contain between 3 to 16 characters and no urls.')
@@ -44,6 +45,7 @@ module.exports = function(req, res, next){
 
 	// Check if user already has an active, valid datepost
 	// This code is really bad
+	// ==============================
 	User.findById(req.user._id).populate('activedatepost').exec(function(err, user){
 		if(user.activedatepost === null){
 			return next();
