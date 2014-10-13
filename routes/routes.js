@@ -6,9 +6,14 @@ var getUserById = require('./handlers/getuserbyid');
 var updateBio = require('./handlers/updatebio');
 var getMyActivePost = require('./handlers/getmyactivepost');
 var deleteDatePost = require('./handlers/deletedatepost');
+var sendRequest = require('./handlers/sendrequest');
+var createDate = require('./handlers/acceptandcreatedate');
+
+
 
 // Required validation handlers
 var datePostValidation = require('./handlers/validation/datepostvalidation');
+var createDateValidation = require('./handlers/validation/createdatevalidation');
 
 // Config for our front-end app
 var frontend = require('../config/frontend');
@@ -35,6 +40,12 @@ module.exports = function(app, passport){
     app.get('/api/activepost', isLoggedIn, getMyActivePost);
 
     app.delete('/api/datepost/:id', isLoggedIn, deleteDatePost);
+
+    app.post('/api/datepost/:id', isLoggedIn, sendRequest);
+
+    // Dates
+
+    app.post('/api/date/:postid/:reqid', isLoggedIn, createDateValidation, createDate);
 
     // User related
     app.get('/api/isloggedin', function(req, res){									// Returns if user is logged in. Used by route restriction in angular.

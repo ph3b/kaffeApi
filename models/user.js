@@ -7,7 +7,8 @@ var userSchema = mongoose.Schema({
 	facebookid : String,
 	facebooktoken : String,
 	bio: { type: String, default: null},
-	activedatepost : { type: mongoose.Schema.Types.ObjectId, ref: 'Datepost' , default: null}
+	activedatepost : { type: mongoose.Schema.Types.ObjectId, ref: 'Datepost' , default: null},
+	activedate : { type: mongoose.Schema.Types.ObjectId, ref: 'Date'}
 
 	//TODO
 	// activedate : true ? object.id ref dates

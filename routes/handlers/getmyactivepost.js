@@ -2,22 +2,26 @@
 // now and midnight the same day. Return '0' if no such date is present.
 
 var User = require('../../models/user');
-var moment = require('moment');
+var Datepost = require('../../models/datepost');
 
 module.exports = function(req, res){
-	User.findById(req.user._id).populate('activedatepost').exec(function(err, user){
-		if(user.activedatepost === null){
-			return res.send('0')
+	// Initialize compare objects
+	var now = new Date();
+	var midnight = new Date();
+	midnight.setHours(23);
+	midnight.setMinutes(59);
+	midnight.setSeconds(0);
+
+	Datepost.findOne()
+	.where('poster').equals(req.user._id)
+	.where('datetime').gte(now).lte(midnight)
+	.populate('requests').exec(function(err, datepost){
+		if(err){
+			res.send(err);
 		}
-		var datepostTime = moment(user.activedatepost.datetime);
-		var now = moment();
-		var midnight = moment();
-		midnight.hours(23);
-		midnight.minutes(59);
-		if(datepostTime.isAfter(now) && datepostTime.isBefore(midnight) && user.activedatepost.active){
-			res.send(user.activedatepost);
-		} else {
-			res.send('0');
+		if(!datepost){
+			return  res.send('0')
 		}
-	});
+		return res.send(datepost)
+	})
 }
