@@ -7,7 +7,7 @@ var updateBio = require('./handlers/updatebio');
 var getMyActivePost = require('./handlers/getmyactivepost');
 var deleteDatePost = require('./handlers/deletedatepost');
 var sendRequest = require('./handlers/sendrequest');
-var createDate = require('./handlers/acceptandcreatedate');
+var createDate = require('./handlers/createdate');
 
 
 
@@ -37,11 +37,11 @@ module.exports = function(app, passport){
     
     app.post('/api/dateposts/', isLoggedIn, datePostValidation, addDatePost); 		// Adds datepost.
 
-    app.get('/api/activepost', isLoggedIn, getMyActivePost);
+    app.get('/api/mydatepost', isLoggedIn, getMyActivePost);                        //
 
     app.delete('/api/datepost/:id', isLoggedIn, deleteDatePost);
 
-    app.post('/api/datepost/:id', isLoggedIn, sendRequest);
+    app.post('/api/sendrequestto/:id', isLoggedIn, sendRequest);
 
     // Dates
 

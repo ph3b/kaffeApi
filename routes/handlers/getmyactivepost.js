@@ -15,6 +15,7 @@ module.exports = function(req, res){
 	Datepost.findOne()
 	.where('poster').equals(req.user._id)
 	.where('datetime').gte(now).lte(midnight)
+	.where('active').equals(true)
 	.populate('requests').exec(function(err, datepost){
 		if(err){
 			res.send(err);

@@ -1,27 +1,22 @@
 // Validation modules
-var moment = require('moment');
 var validator = require('validator');
-
 var User = require('../../../models/user');
-moment().format();
+var DateIsBetweenNowAndMidnight = require('./dateisbetweennowandmidnight');
+
+var dateDidPassValidation = false;
+var locationDidPassValidation = false;
+var messageDidPassValidation = false;
+var activePostDidPassValidation = false;
 
 module.exports = function(req, res, next){
-	var dateDidPass = false;
-	var locationDidPass = false;
-	var messageDidPass = false;
-	var activePostDidPass = false;
 	// Date validation
 	// ==============================
 	// Initialize our compare dates. The time out the moment and midnight this day.
-	var now = moment();
-	var midnight = moment();
-	midnight.hours(23);
-	midnight.minutes(59);
 
-	var userInput = moment(req.body.datetime);
+	var userFormTimeInput = req.body.datetime;
 
-	if(userInput.isAfter(now) && userInput.isBefore(midnight)){
-		dateDidPass = true;
+	if(DateIsBetweenNowAndMidnight(userFormTimeInput)){
+		dateDidPassValidation = true;
 	} else {
 		return res.send('The date specified is outside of valid range. Please specify a date between now and midnight today.')
 	}
@@ -30,7 +25,7 @@ module.exports = function(req, res, next){
 	// Message-field
 	var message = req.body.message;
 	if(validator.isLength(message, 3, 25) && !validator.isURL(message)){
-		locationDidPass = true;
+		locationDidPassValidation = true;
 	} else {
 		return res.send('Message field must contain between 3 to 16 characters and no urls.')
 	}
@@ -38,24 +33,21 @@ module.exports = function(req, res, next){
 	// Location-field
 	var location = req.body.location;
 	if(validator.isLength(location, 3, 25) && !validator.isURL(location)){
-		messageDidPass = true;
+		messageDidPassValidation = true;
 	} else {
 		return res.send('Location field must contain between 3 to 16 characters and no urls.')
 	}
 
 	// Check if user already has an active, valid datepost
-	// This code is really bad
 	// ==============================
 	User.findById(req.user._id).populate('activedatepost').exec(function(err, user){
 		if(user.activedatepost === null){
 			return next();
+		} else if(!DateIsBetweenNowAndMidnight(user.activedatepost.datetime)){
+			return next();
 		} else {
-			var existingDatePostTime = moment(user.activedatepost.datetime);
-			if(existingDatePostTime.isAfter(now) && existingDatePostTime.isBefore(midnight)){
-				return res.send('User already has an active datepost.');
-			} else {
-				return next();
-			}
+			console.log('Did not pass')
 		}
+		
 	})
 }
