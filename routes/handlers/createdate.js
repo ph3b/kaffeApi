@@ -12,7 +12,7 @@ module.exports = function(req, res){
 		newDateObject.guest = req.params.reqid;
 
 		newDateObject.save(function(err, date){
-			// Set host and guest's activedatepost to null
+			// Set host activedatepost to null
 			// =============================================
 			User.findById(req.user._id).populate('activedatepost').exec(function(err, user){
 				if(err){
@@ -34,8 +34,7 @@ module.exports = function(req, res){
 						res.send(err)
 					}
 				})
-
-			})
+			});
 			// Set the guest activepost to null and add pointer the the new activedate.
 			User.findById(req.params.reqid).populate('activedatepost')
 			.exec(function(err, user){
@@ -46,16 +45,16 @@ module.exports = function(req, res){
 						if(err){
 							res.send(err)
 						}
-					})
+					});
 					user.activedatepost = null;
 				}
-				user.save(function(err, user){
+				user.save(function(err){
 					if(err){
 						res.send(err)
 					}
 				})
 				
-			})
+			});
 
 			// We also need to remove any requests sent to other dateposts from the host and the guest
 			// since the two won't be needing them. They can resend a request after the date if they want.
@@ -63,7 +62,7 @@ module.exports = function(req, res){
 			Datepost.find({ 'requests' : req.user._id}, function(err, datepost){
 				for(var i = 0; i < datepost.length; i++){
 					var currentRequestList = datepost[i].requests;
-					var indexOfRequest = currentRequestList.indexOf(req.user._id)
+					var indexOfRequest = currentRequestList.indexOf(req.user._id);
 					currentRequestList.splice(indexOfRequest, 1);
 					datepost[i].save(function(err){
 						if(err){
@@ -71,11 +70,11 @@ module.exports = function(req, res){
 						}
 					})
 				}
-			})
+			});
 			Datepost.find({ 'requests' : req.params.reqid}, function(err, datepost){
 				for(var i = 0; i < datepost.length; i++){
 					var currentRequestList = datepost[i].requests;
-					var indexOfRequest = currentRequestList.indexOf(req.params.reqid)
+					var indexOfRequest = currentRequestList.indexOf(req.params.reqid);
 					currentRequestList.splice(indexOfRequest, 1);
 					datepost[i].save(function(err){
 						if(err){
@@ -83,9 +82,10 @@ module.exports = function(req, res){
 						}
 					})
 				}
-			})
+			});
+
 		res.send(date)
 		})
 
 	}) 
-}
+};

@@ -8,7 +8,8 @@ var userSchema = mongoose.Schema({
 	facebooktoken : String,
 	bio: { type: String, default: null},
 	activedatepost : { type: mongoose.Schema.Types.ObjectId, ref: 'Datepost' , default: null},
-	activedate : { type: mongoose.Schema.Types.ObjectId, ref: 'Date'}
+	activedate : { type: mongoose.Schema.Types.ObjectId, ref: 'Date', default: null},
+    datehistory : [{type: mongoose.Schema.Types.ObjectId, ref: 'Date', default: null}]
 
 	//TODO
 	// activedate : true ? object.id ref dates
