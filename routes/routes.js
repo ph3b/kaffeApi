@@ -18,6 +18,8 @@ var getMyDate = require('./handlers/getmydate');
 var datePostValidation = require('./handlers/validation/datepostvalidation');
 var createDateValidation = require('./handlers/validation/createdatevalidation');
 var userIsMemberOfThisDate = require('./handlers/validation/userismemberofthisdate');
+var userHasDate = require('./handlers/validation/userhasdate');
+
 
 
 // Config for our front-end app
@@ -40,7 +42,7 @@ module.exports = function(app, passport){
     // Dateposts
     app.get('/api/dateposts', isLoggedIn, getDatePosts); 							// Returns all dateposts.
     
-    app.post('/api/dateposts/', isLoggedIn, datePostValidation, addDatePost); 		// Adds datepost.
+    app.post('/api/dateposts/', isLoggedIn, datePostValidation, userHasDate, addDatePost); 		// Adds datepost.
 
     app.get('/api/mydatepost', isLoggedIn, getMyActivePost);                        // Return the users active datepost
 
@@ -49,7 +51,6 @@ module.exports = function(app, passport){
     app.post('/api/sendrequestto/:id', isLoggedIn, sendRequest);                    // Sends request to a datepost by id
 
     // Dates
-
     app.post('/api/date/:postid/:reqid', isLoggedIn, createDateValidation, createDate); // Creates a new date if validation passes
 
     app.get('/api/date/mydate', isLoggedIn, getMyDate);

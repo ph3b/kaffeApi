@@ -8,21 +8,27 @@ module.exports = function(req, res){
 		}
 		// Liker ikke denne iffen. Vi kan bedre enn dette
 		// En idè er å også legge inn en sjekk om man er admin (da må req.user._id erstattes)
-		if(String(req.user._id) === String(datepost.poster._id)){
-			datepost.remove(function(err){
-				if(err){
-					res.send(err)
-				}
-				res.send('Datepost deleted');
-				datepost.poster.activedatepost = null;
-				datepost.poster.save(function(err){
-					if(err){
-						res.send(err);
-					}
-				})
-			})
-		} else {
-            res.send('This is not your datepost!');
+        if(datepost){
+            if(String(req.user._id) === String(datepost.poster._id)){
+                datepost.remove(function(err){
+                    if(err){
+                        res.send(err)
+                    }
+
+                    res.send('Datepost deleted');
+                    datepost.poster.activedatepost = null;
+                    datepost.poster.save(function(err){
+                        if(err){
+                            res.send(err);
+                        }
+                    })
+                })
+            } else {
+                res.send('This is not your datepost!');
+            }
+        } else {
+            res.send('No such datepost exists.')
         }
+
 	})
 };

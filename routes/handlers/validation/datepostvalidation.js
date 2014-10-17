@@ -2,7 +2,6 @@
 var validator = require('validator');
 var User = require('../../../models/user');
 var DateIsBetweenNowAndMidnight = require('./dateisbetweennowandmidnight');
-
 var dateDidPassValidation = false;
 var locationDidPassValidation = false;
 var messageDidPassValidation = false;
@@ -11,7 +10,6 @@ module.exports = function (req, res, next) {
     // Date validation
     // ==============================
     // Initialize our compare dates. The time out the moment and midnight this day.
-
     var userFormTimeInput = req.body.datetime;
 
     if (DateIsBetweenNowAndMidnight(userFormTimeInput)) {
@@ -44,7 +42,7 @@ module.exports = function (req, res, next) {
         } else if (!DateIsBetweenNowAndMidnight(user.activedatepost.datetime)) {
             return next();
         } else {
-            console.log('Did not pass')
+            return res.send('User has active datepost');
         }
 
     })
