@@ -8,7 +8,7 @@ midnight.minutes(59);
 
 module.exports = function(formInputTime){
 	this.formInputTime = moment(formInputTime);
-	if(this.formInputTime.isAfter(now) && this.formInputTime){
+	if(this.formInputTime.isAfter(now) && this.formInputTime.isBefore(midnight)){
 		return true;
 	};
 	return false;

@@ -9,7 +9,6 @@ var messageDidPassValidation = false;
 module.exports = function (req, res, next) {
     // Date validation
     // ==============================
-    // Initialize our compare dates. The time out the moment and midnight this day.
     var userFormTimeInput = req.body.datetime;
 
     if (DateIsBetweenNowAndMidnight(userFormTimeInput)) {

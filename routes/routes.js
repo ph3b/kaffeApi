@@ -11,6 +11,8 @@ var createDate = require('./handlers/createdate');
 var getDateById = require('./handlers/getdate');
 var endDate = require('./handlers/enddate');
 var getMyDate = require('./handlers/getmydate');
+var getCurrentUser = require('./handlers/getcurrentuser');
+
 
 
 
@@ -39,8 +41,8 @@ module.exports = function(app, passport){
 
     // Api routes
 
-    // Dateposts
-    app.get('/api/dateposts', isLoggedIn, getDatePosts); 							// Returns all dateposts.
+    // Datepost routes
+    app.get('/api/dateposts', isLoggedIn, getDatePosts); 							            // Returns all dateposts.
     
     app.post('/api/dateposts/', isLoggedIn, datePostValidation, userHasDate, addDatePost); 		// Adds datepost.
 
@@ -50,26 +52,25 @@ module.exports = function(app, passport){
 
     app.post('/api/sendrequestto/:id', isLoggedIn, sendRequest);                    // Sends request to a datepost by id
 
-    // Dates
+    // Date routes
     app.post('/api/date/:postid/:reqid', isLoggedIn, createDateValidation, createDate); // Creates a new date if validation passes
 
-    app.get('/api/date/mydate', isLoggedIn, getMyDate);
+    app.get('/api/date/mydate', isLoggedIn, getMyDate);                                 // Returns users date or '0' if no date is present.
 
-    app.get('/api/date/:id', isLoggedIn, userIsMemberOfThisDate, getDateById);          // Returns users date or '0' if no date is present.
+    app.get('/api/date/:id', isLoggedIn, userIsMemberOfThisDate, getDateById);          // Returns date by id or '0' if no date is present. Avaiable to host and guest
 
-    app.put('/api/date/:id', isLoggedIn, userIsMemberOfThisDate, endDate);          // Returns users date or '0' if no date is present.
+    app.put('/api/date/:id', isLoggedIn, userIsMemberOfThisDate, endDate);          // Ends the date. Available to host and guest.
 
 
 
-    // User related
+    // User routes
     app.get('/api/isloggedin', function(req, res){									// Returns if user is logged in. Used by route restriction in angular.
     	res.send(req.isAuthenticated() ? req.user : '0')
     });
     app.get('/api/users', isLoggedIn, getUsers); 									// Returns all user. Need to restrict.
     
-    app.get('/api/currentuser', isLoggedIn, function(req, res){ 					// Get current user NB: This returns fb-token, should strip this field.
-    	res.send(req.user);
-    })
+    app.get('/api/currentuser', isLoggedIn, getCurrentUser);
+
     app.get('/api/user/:id', isLoggedIn, getUserById); 								// Get user by their ID. Strips private fields.
 
     app.put('/api/user', isLoggedIn, updateBio); 									// Update bio.
