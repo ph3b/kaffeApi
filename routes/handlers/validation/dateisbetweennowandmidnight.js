@@ -2,15 +2,14 @@ var moment = require('moment');
 
 var now = moment();
 var midnight = moment();
-var formInputTime;
 midnight.hours(23);
 midnight.minutes(59);
-
-module.exports = function(formInputTime){
-	this.formInputTime = moment(formInputTime);
-	if(this.formInputTime.isAfter(now) && this.formInputTime.isBefore(midnight)){
-		return true;
-	};
+console.log(now)
+module.exports = function(_datetime){
+	var datetime = moment(_datetime)
+	if(datetime.isAfter(now) && datetime.isBefore(midnight)){
+		return true
+	}
 	return false;
 
-}
+};

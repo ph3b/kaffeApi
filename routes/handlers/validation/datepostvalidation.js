@@ -2,15 +2,17 @@
 var validator = require('validator');
 var User = require('../../../models/user');
 var DateIsBetweenNowAndMidnight = require('./dateisbetweennowandmidnight');
+var currentDatePostIsActive = require('./currentdatepostisactive.js');
 var dateDidPassValidation = false;
 var locationDidPassValidation = false;
 var messageDidPassValidation = false;
+var moment = require('moment');
+
 
 module.exports = function (req, res, next) {
     // Date validation
     // ==============================
     var userFormTimeInput = req.body.datetime;
-
     if (DateIsBetweenNowAndMidnight(userFormTimeInput)) {
         dateDidPassValidation = true;
     } else {
@@ -38,11 +40,16 @@ module.exports = function (req, res, next) {
     User.findById(req.user._id).populate('activedatepost').exec(function (err, user) {
         if (user.activedatepost === null) {
             return next();
-        } else if (!DateIsBetweenNowAndMidnight(user.activedatepost.datetime)) {
-            return next();
-        } else {
-            return res.send('User has active datepost');
         }
+        var now = moment(new Date());
+        var midnight = moment();
+        midnight.hours(23);
+        midnight.minutes(59);
+        var datetime = moment(user.activedatepost.datetime)
+        if (now.isAfter(datetime)) {
+            return next();
+        }
+        return res.send('User has active datepost');
 
     })
 };

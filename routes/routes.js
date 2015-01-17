@@ -44,7 +44,7 @@ module.exports = function(app, passport){
     // Datepost routes
     app.get('/api/dateposts', isLoggedIn, getDatePosts); 							            // Returns all dateposts.
     
-    app.post('/api/dateposts/', isLoggedIn, datePostValidation, userHasDate, addDatePost); 		// Adds datepost.
+    app.post('/api/dateposts/', isLoggedIn, datePostValidation, userHasDate, addDatePost);  	// Adds datepost.
 
     app.get('/api/mydatepost', isLoggedIn, getMyActivePost);                        // Return the users active datepost
 
